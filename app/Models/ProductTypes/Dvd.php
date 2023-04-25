@@ -7,21 +7,29 @@ use App\Models\Product;
 
 class Dvd extends Product
 {
-    public $size;
+    private $size;
 
-    public function __construct(array $params = array())
+    public function setValue(array $params)
     {
-        parent::__construct();
-        
-        $this->sku = $params["sku"] ?? null;
-        $this->name = $params["name"] ?? null;
-        $this->price = $params["price"] ?? null;
-        $this->productType = $params["productType"] ?? null;
-        $this->size = $params["size"] ?? null;
-    }
+        $errorsArr = array();
 
-    public function setValue()
-    {
+        if ($params['size'] < 0) {
+            array_push($errorsArr, "the size field is required!");
+        }
+        elseif (!is_int(json_decode($params['size']))) {
+            array_push($errorsArr, "the size field must be of type integer!");
+        }
+
+        if ($errorsArr) {
+            return array('errors' => $errorsArr);
+        }
+
+        $this->sku = $params["sku"];
+        $this->name = $params["name"];
+        $this->price = $params["price"];
+        $this->productType = $params["productType"];
+        $this->size = $params["size"];
+
         $sql = "INSERT INTO products (sku, name, price, productType, size) 
         VALUES (
             '$this->sku',

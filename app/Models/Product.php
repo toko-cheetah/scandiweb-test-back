@@ -8,7 +8,7 @@ use Database\Database;
 
 abstract class Product
 {
-    public $sku, $name, $price, $productType;
+    protected $sku, $name, $price, $productType;
     
     protected $database;
 
@@ -30,5 +30,5 @@ abstract class Product
         return $this->database->query($sql);
     }
 
-    abstract protected function setValue();
+    abstract protected function setValue(array $params);
 }

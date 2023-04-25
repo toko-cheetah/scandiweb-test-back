@@ -7,23 +7,33 @@ use App\Models\Product;
 
 class Furniture extends Product
 {
-    public $height, $width, $length;
+    private $height, $width, $length;
 
-    public function __construct(array $params = array())
+    public function setValue(array $params)
     {
-        parent::__construct();
-        
-        $this->sku = $params["sku"] ?? null;
-        $this->name = $params["name"] ?? null;
-        $this->price = $params["price"] ?? null;
-        $this->productType = $params["productType"] ?? null;
-        $this->height = $params["height"] ?? null;
-        $this->width = $params["width"] ?? null;
-        $this->length = $params["length"] ?? null;
-    }
+        $errorsArr = array();
 
-    public function setValue()
-    {
+        foreach (array('height', 'width', 'length') as $key) {
+            if ($params[$key] < 0) {
+                array_push($errorsArr, "the $key field is required!");
+            }
+            elseif (!is_int(json_decode($params[$key]))) {
+                array_push($errorsArr, "the $key field must be of type integer!");
+            }
+        }
+
+        if ($errorsArr) {
+            return array('errors' => $errorsArr);
+        }
+
+        $this->sku = $params["sku"];
+        $this->name = $params["name"];
+        $this->price = $params["price"];
+        $this->productType = $params["productType"];
+        $this->height = $params["height"];
+        $this->width = $params["width"];
+        $this->length = $params["length"];
+
         $sql = "INSERT INTO products (sku, name, price, productType, height, width, length) 
         VALUES (
             '$this->sku',

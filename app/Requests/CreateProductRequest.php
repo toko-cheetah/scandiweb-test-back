@@ -8,7 +8,7 @@ use Database\Database;
 
 class CreateProductRequest
 {
-    protected $database;
+    private $database;
 
     public function __construct()
     {
@@ -46,35 +46,6 @@ class CreateProductRequest
 
         if (!preg_match("/book|dvd|furniture/i", $testedRequest['productType'])) {
             array_push($errorsArr, "the productType field must be: 'Book', 'DVD', or 'Furniture'!");
-        }
-
-        if (strtolower($testedRequest['productType']) === 'book') {
-            if ($testedRequest['weight'] < 0) {
-                array_push($errorsArr, "the weight field is required!");
-            } 
-            elseif (!is_int(json_decode($testedRequest['weight']))) {
-                array_push($errorsArr, "the weight field must be of type integer!");
-            }
-        }
-
-        if (strtolower($testedRequest['productType']) === 'dvd') {
-            if ($testedRequest['size'] < 0) {
-                array_push($errorsArr, "the size field is required!");
-            }
-            elseif (!is_int(json_decode($testedRequest['size']))) {
-                array_push($errorsArr, "the size field must be of type integer!");
-            }
-        }
-
-        if (strtolower($testedRequest['productType']) === 'furniture') {
-            foreach (array('height', 'width', 'length') as $key) {
-                if ($testedRequest[$key] < 0) {
-                    array_push($errorsArr, "the $key field is required!");
-                }
-                elseif (!is_int(json_decode($testedRequest[$key]))) {
-                    array_push($errorsArr, "the $key field must be of type integer!");
-                }
-            }
         }
 
         return array('errors' => $errorsArr, 'testedRequest' => $testedRequest);

@@ -7,21 +7,29 @@ use App\Models\Product;
 
 class Book extends Product
 {
-    public $weight;
+    private $weight;
 
-    public function __construct(array $params = array())
+    public function setValue(array $params)
     {
-        parent::__construct();
+        $errorsArr = array();
+
+        if ($params['weight'] < 0) {
+            array_push($errorsArr, "the weight field is required!");
+        } 
+        elseif (!is_int(json_decode($params['weight']))) {
+            array_push($errorsArr, "the weight field must be of type integer!");
+        }
+
+        if ($errorsArr) {
+            return array('errors' => $errorsArr);
+        }
+
+        $this->sku = $params["sku"];
+        $this->name = $params["name"];
+        $this->price = $params["price"];
+        $this->productType = $params["productType"];
+        $this->weight = $params["weight"];
         
-        $this->sku = $params["sku"] ?? null;
-        $this->name = $params["name"] ?? null;
-        $this->price = $params["price"] ?? null;
-        $this->productType = $params["productType"] ?? null;
-        $this->weight = $params["weight"] ?? null;
-    }
-
-    public function setValue()
-    {
         $sql = "INSERT INTO products (sku, name, price, productType, weight) 
         VALUES (
             '$this->sku', 

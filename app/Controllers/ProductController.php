@@ -34,13 +34,17 @@ class ProductController
             
             $className = "App\Models\ProductTypes\\$productType";
             
-            $obj = new $className($validatedRequest['testedRequest']);
-            $result =  $obj->setValue();
+            $obj = new $className();
+            $result =  $obj->setValue($validatedRequest['testedRequest']);
             
-            if ($result) {
+            if ($result['errors']) {
+                http_response_code(400);
+                echo json_encode($result['errors']);
+            }
+            elseif ($result) {
                 http_response_code(201);
                 echo json_encode('data created!');
-            }
+            } 
         }
     }
 
